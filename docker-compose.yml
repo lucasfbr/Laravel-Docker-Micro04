@@ -1,0 +1,32 @@
+services:
+    # imagem micro gateway
+    micro_gateway:
+        build: 
+            args: 
+                user: 'lucas-borges'
+                uid: 1000 
+            dockerfile: Dockerfile
+        container_name: micro_gateway    
+        extra_hosts:
+          - "host.docker.internal:host-gateway"
+        restart: unless-stopped
+        volumes:
+            - ./:/var/www
+        networks: 
+            - gateway
+    
+    # nginx
+    nginx_gateway:
+        build: .docker/nginx
+        container_name: nginx_gateway
+        restart: unless-stopped
+        ports: 
+            - 8098:80
+        volumes: 
+            - ./:/var/www
+        networks: 
+            - gateway
+
+networks: 
+    gateway:
+        driver: bridge
